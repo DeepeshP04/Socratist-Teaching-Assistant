@@ -4,28 +4,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Socratic Guide AI</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <title>Socratist</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    <h1>Ask a Question</h1>
-    <input type="text" id="question" placeholder="Type your question here" />
-    <button id="ask-btn">Ask</button>
-    <p id="response"></p>
+    <h1>Socratist Chatbot</h1>
+    <div id="chatbox"></div>
+    <input type="text" id="user_input" placeholder="Type your question here...">
+    <button onclick="sendMessage()">Send</button>
 
     <script>
-        $('#ask-btn').on('click', function() {
-            const question = $('#question').val();
-            $.ajax({
-                url: '/ask',
-                method: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({ question }),
-                success: function(response) {
-                    $('#response').text(response.next_question);
-                }
+        async function sendMessage() {
+            const userInput = document.getElementById("user_input").value;
+            const response = await fetch("/ask", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ message: userInput })
             });
-        });
+            const data = await response.json();
+            document.getElementById("chatbox").innerHTML += "<p>User: " + userInput + "</p>";
+            document.getElementById("chatbox").innerHTML += "<p>Assistant: " + data.response + "</p>";
+            document.getElementById("user_input").value = "";
+        }
     </script>
 </body>
 </html>
