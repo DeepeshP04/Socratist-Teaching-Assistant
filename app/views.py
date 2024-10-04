@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, jsonify
 from .modules import socratist
 import os
+from . import limiter
 
 views = Blueprint("views", __name__, url_prefix="/")
 
@@ -11,6 +12,7 @@ def index():
     return render_template("index.html")
 
 @views.route("/ask", methods=["POST"])
+@limiter.limit("5 per minute")
 def ask_question():
     user_message = request.json['message']
     
