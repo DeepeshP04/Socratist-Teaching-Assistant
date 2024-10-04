@@ -12,7 +12,7 @@ def index():
     return render_template("index.html")
 
 @views.route("/ask", methods=["POST"])
-@limiter.limit("5 per minute")
+@limiter.limit("4 per minute")
 def ask_question():
     user_message = request.json['message']
     
